@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eo pipefail
 
-IMAGE_NAME=uber/ssh-agent-forward:latest
+IMAGE_NAME=transifex/ssh-agent-forward:latest
 CONTAINER_NAME=pinata-sshd
 VOLUME_NAME=ssh-agent
 HOST_PORT=2244
@@ -59,4 +59,4 @@ echo 'Run "pinata-ssh-mount" to get a command-line fragment that'
 echo 'can be added to "docker run" to mount the SSH agent socket.'
 echo ""
 echo 'For example:'
-echo "docker run -it \$(pinata-ssh-mount) uber/ssh-agent-forward ssh -T git@github.com"
+echo "docker run -it \$(pinata-ssh-mount) transifex/ssh-agent-forward ssh -T git@github.com"

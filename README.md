@@ -1,6 +1,6 @@
 Forward SSH agent socket into a container
 
-Still experimental -- contact anil@recoil.org or bryan@uber.com if you want help.
+Still experimental -- contact anil@recoil.org or bryan@uber.com or kouk@transifex.com if you want help.
 
 
 ## Installation
@@ -8,7 +8,7 @@ Still experimental -- contact anil@recoil.org or bryan@uber.com if you want help
 Assuming you have a `/usr/local`
 
 ```
-$ git clone git://github.com/uber-common/docker-ssh-agent-forward
+$ git clone git://github.com/transifex/docker-ssh-agent-forward
 $ cd docker-ssh-agent-forward
 $ make
 $ make install
