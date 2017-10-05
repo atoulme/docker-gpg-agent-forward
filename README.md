@@ -1,6 +1,8 @@
-Forward SSH agent socket into a container
+Forward GNUPG agent socket into a container
 
-Still experimental -- contact anil@recoil.org or bryan@uber.com or kouk@transifex.com if you want help.
+Based on https://github.com/uber-common/docker-ssh-agent-forward
+
+Still experimental -- contact kouk@transifex.com if you want help.
 
 
 ## Installation
@@ -8,8 +10,8 @@ Still experimental -- contact anil@recoil.org or bryan@uber.com or kouk@transife
 Assuming you have a `/usr/local`
 
 ```
-$ git clone git://github.com/transifex/docker-ssh-agent-forward
-$ cd docker-ssh-agent-forward
+$ git clone git://github.com/transifex/gpg-agent-forward
+$ cd gpg-agent-forward
 $ make
 $ make install
 ```
@@ -17,37 +19,39 @@ $ make install
 On every boot, do:
 
 ```
-pinata-ssh-forward
+pinata-gpg-forward
 ```
 
-and the you can run `pinata-ssh-mount` to get a Docker CLI fragment that adds
-the SSH agent socket and sets `SSH_AUTH_SOCK` within the container.
+and the you can add `-v /gpg-agent:/path/to/.gnupg/` to your docker CLI command to
+mount the GNUPG home directory into your container:
 
 ```
-$ pinata-ssh-mount
--v ssh-agent:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent/ssh-agent.sock
-
-$ docker run -it $(pinata-ssh-mount) 
-/ssh-agent-forward ssh -T git@github.com
-The authenticity of host 'github.com (192.30.252.128)' can't be established.
-RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of known hosts.
-PTY allocation request failed on channel 0
-Hi avsm! You've successfully authenticated, but GitHub does not provide shell access.
+$ docker run -it -v /gnupg:/root/.gnupg transifex/gpg-agent-forward gpg -a -s
+foo
+-----BEGIN PGP MESSAGE-----
+...
 ```
 
 To fetch the latest image, do:
 
 ```
-pinata-ssh-pull
+pinata-gpg-pull
 ```
 
+## Running as non-root
+
+If you want to use the GNUPG home dir in a container as a non-root user you
+need to first fix permissions (assuming 1000 is your user id):
+
+```
+docker exec pinata-gpg-agent chown -R 1000:1000 /gpg-agent
+docker exec pinata-gpg-agent chmod -R 700 /gpg-agent
+```
 
 ## Developing
 
 To build an image yourself rather than fetching from Docker Hub, run
-`./pinata-ssh-build.sh` from your clone of this repo.
+`./pinata-gpg-build.sh` from your clone of this repo.
 
 We didn't bother installing the build script with the Makefile since using the
 hub image should be the common case.
@@ -57,5 +61,6 @@ hub image should be the common case.
 
 * Justin Cormack
 * https://github.com/uber-common/docker-ssh-agent-forward/graphs/contributors
+* https://github.com/transifex/docker-gpg-forward/graphs/contributors
 
 [License](LICENSE.md) is ISC.

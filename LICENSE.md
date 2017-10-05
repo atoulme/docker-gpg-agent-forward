@@ -1,3 +1,4 @@
+Copyright (c) 2017 Konstantinos Koukopoulos <kouk@transifex.com>
 Copyright (c) 2016 Anil Madhavapeddy <anil@recoil.org>
 
 Permission to use, copy, modify, and distribute this software for any

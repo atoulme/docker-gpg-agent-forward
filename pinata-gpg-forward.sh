@@ -1,10 +1,11 @@
 #!/bin/sh
 set -eo pipefail
 
-IMAGE_NAME=transifex/ssh-agent-forward:latest
-CONTAINER_NAME=pinata-sshd
-VOLUME_NAME=ssh-agent
-HOST_PORT=2244
+GNUPG_EXTRA_SOCKET=$HOME/.gnupg/S.gpg-agent.extra
+IMAGE_NAME=transifex/gpg-agent-forward:latest
+CONTAINER_NAME=pinata-gpg-agent
+VOLUME_NAME=gpg-agent
+HOST_PORT=2255
 AUTHORIZED_KEYS=$(ssh-add -L | base64 | tr -d '\n')
 KNOWN_HOSTS_FILE=$(mktemp -t dsaf.XXX)
 
@@ -18,7 +19,7 @@ docker run \
   --name "${CONTAINER_NAME}" \
   --restart always \
   -e AUTHORIZED_KEYS="${AUTHORIZED_KEYS}" \
-  -v ${VOLUME_NAME}:/ssh-agent \
+  -v ${VOLUME_NAME}:/gpg-agent \
   -d \
   -p "${HOST_PORT}:22" \
   "${IMAGE_NAME}" >/dev/null
@@ -35,28 +36,23 @@ while [ 1 ] && ! nc -z -w5 ${HOST_IP} ${HOST_PORT}; do sleep 0.1; done
 
 ssh-keyscan -p "${HOST_PORT}" "${HOST_IP}" >"${KNOWN_HOSTS_FILE}" 2>/dev/null
 
-# show the keys that are being forwarded
+# forward gnupg extra socket
 ssh \
-  -A \
+  -fNT \
+  -R /gpg-agent/S.gpg-agent:$GNUPG_EXTRA_SOCKET \
   -o "UserKnownHostsFile=${KNOWN_HOSTS_FILE}" \
+  -o "ExitOnForwardFailure=yes" \
   -p "${HOST_PORT}" \
   -S none \
-  "root@${HOST_IP}" \
-  ssh-add -l
+  "root@${HOST_IP}"
 
-# keep the agent running
-ssh \
-  -A \
-  -f \
-  -o "UserKnownHostsFile=${KNOWN_HOSTS_FILE}" \
-  -p "${HOST_PORT}" \
-  -S none \
-  "root@${HOST_IP}" \
-  /ssh-entrypoint.sh
+# import public keys
+gpg --with-colons -K| \
+    awk -F: '/^sec/{print $5}' | \
+    xargs -n 1 gpg --export -a | \
+    ssh -o "UserKnownHostsFile=${KNOWN_HOSTS_FILE}" \
+       -S none -p "${HOST_PORT}" "root@${HOST_IP}" \
+       gpg --homedir /gpg-agent --import
 
-echo 'Agent forwarding successfully started.'
-echo 'Run "pinata-ssh-mount" to get a command-line fragment that'
-echo 'can be added to "docker run" to mount the SSH agent socket.'
-echo ""
-echo 'For example:'
-echo "docker run -it \$(pinata-ssh-mount) transifex/ssh-agent-forward ssh -T git@github.com"
+echo 'GPG Agent forwarding successfully started.'
+echo 'Run your containers with "-v /gnupg/:$HOME/.gnupg"'
