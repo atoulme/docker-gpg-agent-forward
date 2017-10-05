@@ -1,6 +1,8 @@
-FROM alpine:3.5
+FROM alpine:3.6
 
 RUN apk add --no-cache openssh socat tini
+
+ADD sshd_config /etc/ssh/sshd_config
 
 RUN mkdir /root/.ssh && \
     chmod 700 /root/.ssh
