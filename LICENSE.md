@@ -1,3 +1,4 @@
+Copyright (c) 2019 Antoine Toulme <antoine@lunar-ocean.com>
 Copyright (c) 2017 Konstantinos Koukopoulos <kouk@transifex.com>
 Copyright (c) 2016 Anil Madhavapeddy <anil@recoil.org>
 

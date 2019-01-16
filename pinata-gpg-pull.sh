@@ -1,2 +1,2 @@
 #!/bin/sh
-exec docker pull transifex/gpg-agent-forward:latest
+exec docker pull tmio/gpg-agent-forward:latest

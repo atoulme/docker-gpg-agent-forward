@@ -2,7 +2,7 @@
 set -eo pipefail
 
 GNUPG_EXTRA_SOCKET=$HOME/.gnupg/S.gpg-agent.extra
-IMAGE_NAME=transifex/gpg-agent-forward:latest
+IMAGE_NAME=tmio/gpg-agent-forward:latest
 CONTAINER_NAME=pinata-gpg-agent
 VOLUME_NAME=gpg-agent
 HOST_PORT=2255

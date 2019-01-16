@@ -2,7 +2,7 @@ Forward GNUPG agent socket into a container
 
 Based on https://github.com/uber-common/docker-ssh-agent-forward
 
-Still experimental -- contact kouk@transifex.com if you want help.
+Still experimental -- contact antoine@lunar-ocean.com if you want help.
 
 
 ## Installation
@@ -10,7 +10,7 @@ Still experimental -- contact kouk@transifex.com if you want help.
 Assuming you have a `/usr/local`
 
 ```
-$ git clone git://github.com/transifex/gpg-agent-forward
+$ git clone git://github.com/tmio/gpg-agent-forward
 $ cd gpg-agent-forward
 $ make
 $ make install
@@ -26,7 +26,7 @@ and the you can add `-v /gpg-agent:/path/to/.gnupg/` to your docker CLI command 
 mount the GNUPG home directory into your container:
 
 ```
-$ docker run -it -v /gnupg:/root/.gnupg transifex/gpg-agent-forward gpg -a -s
+$ docker run -it -v /gnupg:/root/.gnupg tmio/gpg-agent-forward gpg -a -s
 foo
 -----BEGIN PGP MESSAGE-----
 ...
@@ -62,5 +62,6 @@ hub image should be the common case.
 * Justin Cormack
 * https://github.com/uber-common/docker-ssh-agent-forward/graphs/contributors
 * https://github.com/transifex/docker-gpg-forward/graphs/contributors
+* https://github.com/tmio/docker-gpg-forward/graphs/contributors
 
 [License](LICENSE.md) is ISC.
