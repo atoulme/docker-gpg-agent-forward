@@ -6,6 +6,7 @@ ADD sshd_config /etc/ssh/sshd_config
 
 RUN mkdir /root/.ssh && \
     chmod 700 /root/.ssh
+RUN passwd -u root
 
 EXPOSE 22
 

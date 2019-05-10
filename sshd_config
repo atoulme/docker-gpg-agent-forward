@@ -1,1 +1,3 @@
 StreamLocalBindUnlink yes
+PermitRootLogin yes
+PasswordAuthentication no
